@@ -11,13 +11,13 @@
  */
 #include <linux/init.h>
 #include <linux/linkage.h>
-#include <asm/assembler.h>
 #include <asm/asm-offsets.h>
 #include <asm/hwcap.h>
 #include <asm/pgtable-hwdef.h>
 #include <asm/pgtable.h>
 
 #include "proc-macros.S"
+#include "pabort-v7.S"
 
 #define TTB_S		(1 << 1)
 #define TTB_RGN_NC	(0 << 3)
