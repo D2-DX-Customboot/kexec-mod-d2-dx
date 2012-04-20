@@ -1,0 +1,15 @@
+This is a fork of the kexec-mod project used by other mobile phones. 
+Credit goes to those who originally did the project, I just managed to get 
+the module to build and insert properly on the Droid2 (NOT GLOBAL!), meaning
+it should also insert just fine on the DroidX.
+
+I need some help getting kexec-tools to compile for the ARM7 Arch, if you'd like to help,
+don't be shy!
+
+==========
+BUILDING
+==========
+
+To build, edit envsetup.sh to point to your compiled kernel sources and
+Android NDK directory. Then, run envsetup.sh and make. You'll then have
+a nice, fresh kexec_load.ko file as the output.
