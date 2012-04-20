@@ -1,1 +1,8 @@
 *.o
+.core.o.cmd
+.kexec.o.cmd
+.machine_kexec.o.cmd
+.mmu.o.cmd
+.proc-v7.o.d
+.relocate_kernel.o.cmd
+.sys.o.cmd

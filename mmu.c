@@ -15,7 +15,6 @@
 #include <linux/mman.h>
 #include <linux/nodemask.h>
 #include <linux/ioport.h>
-#include <linux/lttlite-events.h>
 
 #include <asm/cputype.h>
 #include <asm/mach-types.h>
