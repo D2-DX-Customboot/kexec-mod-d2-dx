@@ -10,7 +10,6 @@
 
 struct mm_struct init_mm = {
 	.mm_rb		= RB_ROOT,
-	.pgd		= swapper_pg_dir,
 	.mm_users	= ATOMIC_INIT(2),
 	.mm_count	= ATOMIC_INIT(1),
 	.mmap_sem	= __RWSEM_INITIALIZER(init_mm.mmap_sem),

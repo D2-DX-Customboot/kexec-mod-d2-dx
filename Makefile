@@ -5,7 +5,7 @@
 # Else if we need for Freescale i.MX31 - we should use
 # EXTRA_CFLAGS += -D__PLAT_FREESCALE_IMX31__
 
-EXTRA_CFLAGS += -DCONFIG_KEXEC -D__PLAT_TI_OMAP3430__ -Wall -march=armv7-a -mtune=cortex-a8 -mfpu=neon --sysroot=$NDK
+EXTRA_CFLAGS += -DCONFIG_KEXEC -D__PLAT_TI_OMAP3430__ -Wall -march=armv7-a -mtune=cortex-a8 -mfpu=neon -fno-pic --sysroot=$NDK
 CPPFLAGS=-I/opt/android-ndk/toolchains/arm-linux-androideabi-4.4.3/platforms/android-8/arch-arm/
 LDFLAGS=-static --sysroot=/opt/android-ndk/toolchains/arm-linux-androideabi-4.4.3/platforms/android-8/arch-arm/
 
@@ -17,5 +17,4 @@ all:
 	make -C $(KERNDIR) M=$(PWD) modules
 
 clean:
-	rm *.o
-	rm -f *.order
+	rm -rf *.o *.order *.ko .tmp_versions Module.symvers kexec_load.mod.c Modules.order
