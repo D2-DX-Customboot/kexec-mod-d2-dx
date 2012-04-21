@@ -6,6 +6,8 @@ it should also insert just fine on the DroidX.
 I need some help getting kexec-tools to compile for the ARM7 Arch, if you'd like to help,
 don't be shy!
 
+ilikenwf/Matt Parnell
+
 ==========
 BUILDING
 ==========
