@@ -17,4 +17,4 @@ all:
 	make -C $(KERNDIR) M=$(PWD) modules
 
 clean:
-	rm -rf *.o *.order *.ko .tmp_versions Module.symvers kexec_load.mod.c Modules.order
+	rm -rf *.o *.order *.ko .tmp_versions Module.symvers Modules.order
