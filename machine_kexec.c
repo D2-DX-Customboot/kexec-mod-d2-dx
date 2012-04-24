@@ -13,6 +13,8 @@
 #include <asm/cacheflush.h>
 #include <asm/mach-types.h>
 
+#include "arm_kexec.h"
+
 extern const unsigned char relocate_new_kernel[];
 extern const unsigned int relocate_new_kernel_size;
 
@@ -21,7 +23,10 @@ extern void setup_mm_for_reboot(char mode);
 extern unsigned long kexec_start_address;
 extern unsigned long kexec_indirection_page;
 extern unsigned long kexec_mach_type;
+
+#ifdef CONFIG_ATAGS_PROC
 extern unsigned long kexec_boot_atags;
+#endif 
 
 /*
  * Provide a dummy crash_notes definition while crash dump arrives to arm.
@@ -63,8 +68,10 @@ void machine_kexec(struct kimage *image)
 	kexec_start_address = image->start;
 	kexec_indirection_page = page_list;
 	kexec_mach_type = machine_arch_type;
+	#ifdef CONFIG_ATAGS_PROC
 	kexec_boot_atags = image->start - KEXEC_ARM_ZIMAGE_OFFSET + KEXEC_ARM_ATAGS_OFFSET;
-
+	#endif
+	
 	/* copy our kernel relocation code to the control code page */
 	memcpy(reboot_code_buffer,
 	       relocate_new_kernel, relocate_new_kernel_size);

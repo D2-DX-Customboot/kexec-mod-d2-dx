@@ -3,10 +3,28 @@
  */
 
 #include <asm/kexec.h>
+#include "arm_kexec.h"
 
 	.globl relocate_new_kernel
 relocate_new_kernel:
 
+	#ifndef CONFIG_ATAGS_PROC 
+	/* Move boot params back to where the kernel expects them */ 
+			ldr     r0,kexec_boot_params_address 
+			teq     r0,#0 
+			beq     8f 
+	 
+			ldr     r1,kexec_boot_params_copy 
+			mov     r6,#KEXEC_BOOT_PARAMS_SIZE/4 
+	 7: 
+			ldr     r5,[r1],#4 
+			str     r5,[r0],#4 
+			subs    r6,r6,#1 
+			bne     7b 
+	 8: 
+	/* Boot params moved, now go on with the kernel */ 
+	#endif
+	
 	ldr	r0,kexec_indirection_page
 	ldr	r1,kexec_start_address
 
@@ -50,7 +68,11 @@ relocate_new_kernel:
 	mov lr,r1
 	mov r0,#0
 	ldr r1,kexec_mach_type
+	#ifdef CONFIG_ATAGS_PROC 
 	ldr r2,kexec_boot_atags
+	#else
+	ldr r2,kexec_boot_params_address
+	#endif
 	mov pc,lr
 
 	.globl kexec_start_address
@@ -64,11 +86,22 @@ kexec_indirection_page:
 	.globl kexec_mach_type
 kexec_mach_type:
 	.long	0x0
-
+	
+#ifdef CONFIG_ATAGS_PROC 
 	/* phy addr of the atags for the new kernel */
 	.globl kexec_boot_atags
 kexec_boot_atags:
 	.long	0x0
+#else
+    /* phy addr where new kernel will expect to find boot params */ 
+	 	        .globl kexec_boot_params_address 
+	 	kexec_boot_params_address: 
+	 	        .long   0x0 
+	 	 
+	/* phy addr where old kernel put a copy of orig boot params */ 
+	.globl kexec_boot_params_copy 
+	 	kexec_boot_params_copy: 
+#endif
 
 relocate_new_kernel_end:
 

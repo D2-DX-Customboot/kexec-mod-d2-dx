@@ -39,6 +39,8 @@
 #include <asm/sections.h>
 #include <asm/unistd.h>
 
+#include "arm_kexec.h"
+
 MODULE_LICENSE("GPL");
 
 /* Syscall table */

@@ -44,6 +44,8 @@
 #include <asm/io.h>
 #include <asm/unistd.h>
 
+#include "arm_kexec.h"
+
 extern asmlinkage long (*original_reboot)(int magic1, int magic2, unsigned int cmd, void __user *arg);
 
 static struct notifier_block dummy_notifier_reboot = {
