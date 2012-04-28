@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2002-3 Patrick Mochel
  *               2002-3 Open Source Development Lab
+ * This Edition is maintained by Matthew Veety (aliasxerog) <mveety@gmail.com>
  *
  * This file is released under the GPLv2
  *

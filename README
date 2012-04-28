@@ -1,23 +1,111 @@
-This is a fork of the kexec-mod project used by other mobile phones. 
-Credit goes mostly to aliasxerog, and also to the Eternity project, I just managed to get 
-the module to build and insert properly on the Droid2 (NOT GLOBAL!), meaning
-it should also insert just fine on the DroidX.
+Android kexec port
+By Matthew Veety, et al.
 
-I need some help getting kexec-tools to compile for the ARM7 Arch, if you'd like to help,
-don't be shy!
+Contents:
+	Synopsis
+	Cross-compiling on Gentoo and other Linuxes How-to
+	Troubleshooting
 
-ilikenwf/Matt Parnell
+================================================================================
 
-==========
-BUILDING
-==========
+Synopsis:
 
-You *must* use bash, and not zsh or any other shell!
+This is the kmod from the project trying to unlock the Milestone. It is still
+localized to that phone, but, with modification, I got working on the Droid X
+and a few others. Currently, this is a work in progress and is not recommended
+for mission critical situations.
 
-To build, edit envsetup.sh to point to your compiled kernel sources and
-Android NDK directory. Then, run the below:
+To compile:
+Place your kernel sources into kernel/ and build the kernel
+in that directory. Then run make (or gmake on freebsd) to build
+the kernel module. I highly recommend actually doing the build on
+the phone you desire to run the kmod on. I use a gentoo stage3
+chroot environment on my Droid X to do the building.
 
-source envsetup.sh
-make
+Targets:
+Droid X
 
-You'll then have a nice, fresh kexec_load.ko file as the output.
+In-progress Targets:
+Droid 2
+Nexus S
+
+Future Targets:
+Droid 2 Global
+Droid Bionic
+
+================================================================================
+
+Cross-compiling on Gentoo and other Linuxes How-to:
+
+    To set this up you need a cross-compiler. A cross-compiler allows your to 
+make binaries for something other than your platform. If you've ever built Android 
+then you've used one. There are two methods to do this; the first method is using
+Android's cross-compiler to build. There are tools to set this up and it seems 
+to be very easy to use, but I've never got that method to work. The method I use 
+uses a nice tool that is in portage (I'm a gentoo user) called cross dev.
+
+	~note from palmercurling~
+	To set up a cross-compiler in Debian or a Debian fork (Ubuntu, Mint, others)
+	follow the steps at http://www.scratchbox.org/
+
+Your first step should be setting up a stage3 chroot. The Gentoo handbook outlines
+how to do this, and the process is pretty simple. It only needs to be very 
+minimal and doesn't need X or any other sort of graphical environment. 
+I install mine to /opt because I have a nice 300 GB hard drive mounted there to 
+hold all of my Android things. 
+
+So after you're chrooted into your cross environment install crossdev by running:
+# emerge -avp crossdev      # This is to see dependencies
+# emerge -av crossdev        # This makes sure you want to go through with it
+
+After crossdev gets done emerging run:
+# emerge --sync
+to get the latest version of the portage tree. If rsync is blocked choose the http
+method outlined in the Gentoo Handbook.
+
+crossdev has pretty simple options that can be seen by invoking:
+$ crossdev
+or
+# crossdev
+
+The option you'll be interested in is --target. This allows your to build the specified
+gcc, libc, and binutils. --target takes its option as ARCH-VENDOR-OS-LIBC. For
+possible choices invoke:
+$ crossdev -t help
+$ crossdev --target help
+# crossdev -t help
+or
+# crossdev --target help
+
+Now because Adnroid is Linux and initx requires glibc your tuple for --target
+will look something like ARCH-VENDOR-linux-glibc. Also because Android
+kexec only supports ARM right now you're going to want either arm or armeb
+for ARCH. That is phone dependent. The Droid X seems to run fine with either,
+but the Nexus One really doesn't like using arm without compiling the kernel with
+softfloat in the vendor.
+
+TIPS: This doesn't work on Gentoo/FreeBSD yet. No idea why either. Cross
+works fine on normal *BSD though. Crossdev is also crazy useful for 
+compiling Windows apps. crossdev + wine = windows development bliss.
+
+================================================================================
+
+TROUBLESHOOTING:
+
+1. I'm getting segmentation faults!
+    Check your cross setup. The common cause for me is adding in softfloat when I
+    didn't need it. Don't feel bad, it's a common issue.
+2. kexec won't load into the kernel!
+    The cross setup needs to be the same configuration as the one that compiles your
+    kernel. Check your CHOST after running make menuconfig in your kernel. 
+3. I'm getting errors on compile!
+    Read them and fix them, if it's my fault send me a fix for it.
+4. How do I actually use this?
+     You'll need to write a wrapper to make the system call. I did that so inexperienced
+     users won't damage their phone. kexec is pretty well documented, and you can look
+     at the i686 sources for a really well done reference, plus the man pages have it pretty
+     well documented.
+5. This file looks funny in my emacs window!
+   I know, I didn't format it to 80 cols just to be a dick to you :P. Actually, I use
+   TextEdit.app (it's a GNUstep app because I'm a GNUstep user) which doesn't easily
+   understand the concepts of "wrap the damn line at 80."

@@ -5,6 +5,7 @@
  * Copyright (c) 2002-3 Open Source Development Labs
  * Copyright (c) 2006 Greg Kroah-Hartman <gregkh@suse.de>
  * Copyright (c) 2006 Novell, Inc.
+ * This Edition is maintained by Matthew Veety (aliasxerog) <mveety@gmail.com>
  *
  * This file is released under the GPLv2
  *
@@ -49,7 +50,4 @@ void device_shutdown(void)
 			dev->driver->shutdown(dev);
 		}
 	}
-	//kobject_put(sysfs_dev_char_kobj);
-	//kobject_put(sysfs_dev_block_kobj);
-	//kobject_put(dev_kobj);
 }

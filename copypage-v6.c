@@ -25,13 +25,12 @@
 #endif
 
 #define from_address	(0xffff8000)
-#define to_address	(0xffffc000)
+#define to_address	(0xffffc000
 
 /*
  * Copy the user page.  No aliasing to deal with so we can just
  * attack the kernel's existing mapping of these pages.
  */
-
 static void v6_copy_user_highpage_nonaliasing(struct page *to,
 	struct page *from, unsigned long vaddr)
 {
@@ -54,7 +53,6 @@ static void v6_clear_user_highpage_nonaliasing(struct page *page, unsigned long 
 	clear_page(kaddr);
 	kunmap_atomic(kaddr, KM_USER0);
 }
-
 
 struct cpu_user_fns v6_user_fns __initdata = {
 	.cpu_clear_user_highpage = v6_clear_user_highpage_nonaliasing,

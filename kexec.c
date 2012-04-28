@@ -1,6 +1,7 @@
 /*
  * kexec.c - kexec system call
  * Copyright (C) 2002-2004 Eric Biederman  <ebiederm@xmission.com>
+ * This Edition is maintained by Matthew Veety (aliasxerog) <mveety@gmail.com>
  *
  * This source code is licensed under the GNU General Public License,
  * Version 2.  See the file COPYING for more details.
@@ -49,7 +50,7 @@ asmlinkage long (*original_reboot)(int magic1, int magic2, unsigned int cmd, voi
 extern asmlinkage long reboot(int magic1, int magic2, unsigned int cmd, void __user *arg);
 
 /* Per cpu memory for storing cpu states in case of system crash. */
-note_buf_t *crash_notes;
+note_buf_t* crash_notes;
 
 /* vmcoreinfo stuff */
 unsigned char vmcoreinfo_data[VMCOREINFO_BYTES];
@@ -64,6 +65,13 @@ struct resource crashk_res = {
 	.end   = 0,
 	.flags = IORESOURCE_BUSY | IORESOURCE_MEM
 };
+
+int kexec_should_crash(struct task_struct *p)
+{
+	if (in_interrupt() || !p->pid || is_global_init(p))
+		return 1;
+	return 0;
+}
 
 /*
  * When kexec transitions to the new kernel there is a one-to-one

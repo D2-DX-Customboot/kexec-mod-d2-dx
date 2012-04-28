@@ -11,13 +11,13 @@
  */
 #include <linux/init.h>
 #include <linux/linkage.h>
+#include <asm/assembler.h>
 #include <asm/asm-offsets.h>
 #include <asm/hwcap.h>
 #include <asm/pgtable-hwdef.h>
 #include <asm/pgtable.h>
 
 #include "proc-macros.S"
-#include "pabort-v7.S"
 
 #define TTB_S		(1 << 1)
 #define TTB_RGN_NC	(0 << 3)
@@ -298,7 +298,6 @@ __v7_setup_stack:
 	.type	v7_processor_functions, #object
 ENTRY(v7_processor_functions)
 	.word	v7_early_abort
-	.word	v7_pabort
 	.word	cpu_v7_proc_init
 	.word	cpu_v7_proc_fin
 	.word	cpu_v7_reset

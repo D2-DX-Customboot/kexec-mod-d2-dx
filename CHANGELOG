@@ -1,0 +1,13 @@
+Release 1 (Revision 29) [19-01-11]
+    # First Release for the Droid X
+
+Release 2 (Revision 30) [14-02-11]
+    # First Release for the Droid 2 and Nexus S
+    # Removed Nexus One as a target
+    # Moved Droid X into alpha
+    # Added Droid 2 Global as a Future Target
+    # Generic Code Clean-up
+    # Commented out device_shutdown() on line 66 of sys,c
+    # Commented out sysdev_shutdown() on line 67 of sys.c
+    # Added a cross-compiling how-to in the README as per user demand.
+
