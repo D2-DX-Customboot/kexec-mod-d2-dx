@@ -1,5 +1,5 @@
 This is a fork of the kexec-mod project used by other mobile phones. 
-Credit goes to those who originally did the project, I just managed to get 
+Credit goes mostly to aliasxerog, and also to the Eternity project, I just managed to get 
 the module to build and insert properly on the Droid2 (NOT GLOBAL!), meaning
 it should also insert just fine on the DroidX.
 
