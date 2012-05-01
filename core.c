@@ -28,7 +28,7 @@
 /**
  * device_shutdown - call ->shutdown() on each device to shutdown.
  */
-void device_shutdown(void)
+/* void device_shutdown(void)
 {
 	struct device *dev, *devn, *dummy_device;
 	struct kset *devices_kset;
@@ -49,5 +49,22 @@ void device_shutdown(void)
 			dev_dbg(dev, "shutdown\n");
 			dev->driver->shutdown(dev);
 		}
+	}
+}
+*/
+
+/* does the same as above but only for dev->bus */
+/* fixes droid x crash on panic */
+void
+device_shutdown(void)
+{
+	struct device *d, *dev;
+	struct kset *devices_kset;
+	struct device *bf = kzalloc(sizeof(*bf), GPF_KERNEL);
+	device_initialize(bf); devices_kset = bf->kobj.kset;
+	put_device(bf);
+	list_for_each_entry_safe_reverse(d,dev,&devices_kset->list,kobj.entry){
+		if(dev->bus && dev->bus->shutdown)
+			dev->bus->shutdown(d);
 	}
 }

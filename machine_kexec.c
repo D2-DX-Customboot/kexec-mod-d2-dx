@@ -39,10 +39,13 @@ void machine_kexec_cleanup(struct kimage *image)
 
 void machine_shutdown(void)
 {
+	device_shutdown();
 }
 
 void machine_crash_shutdown(struct pt_regs *regs)
 {
+	device_shutdown();
+	/* someone should panic() here */
 }
 
 void machine_kexec(struct kimage *image)
