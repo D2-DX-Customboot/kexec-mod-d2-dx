@@ -182,8 +182,8 @@ static int do_kimage_alloc(struct kimage **rimage, unsigned long entry,
 
 		mstart = image->segment[i].mem;
 		mend   = mstart + image->segment[i].memsz;
-		if ((mstart & ~PAGE_MASK) || (mend & ~PAGE_MASK))
-			goto out;
+	/*   	if ((mstart & ~PAGE_MASK) || (mend & ~PAGE_MASK))
+			goto out; */
 		if (mend >= KEXEC_DESTINATION_MEMORY_LIMIT)
 			goto out;
 	}
@@ -335,6 +335,8 @@ static int kimage_crash_alloc(struct kimage **rimage, unsigned long entry,
 		goto out;
 	}
 
+	*rimage = image;
+	return 0;
 	result = 0;
 out:
 	if (result == 0)
