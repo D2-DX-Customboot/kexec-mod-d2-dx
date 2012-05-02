@@ -63,8 +63,8 @@ void kernel_restart_prepare(char *cmd)
 
 	blocking_notifier_call_chain(&notifier_head, SYS_RESTART, cmd);
 	system_state = SYSTEM_RESTART;
-//	device_shutdown();
-//	sysdev_shutdown();
+/*	device_shutdown(); */
+/*	sysdev_shutdown(); */
 }
 
 /*
@@ -78,24 +78,25 @@ void kernel_restart_prepare(char *cmd)
 asmlinkage long reboot(int magic1, int magic2, unsigned int cmd, void __user *arg)
 {
 	int ret;
-	if(cmd==LINUX_REBOOT_CMD_KEXEC) {
+/*	if(cmd==LINUX_REBOOT_CMD_KEXEC) { */
 		/* We only trust the superuser with rebooting the system. */
-		if (!capable(CAP_SYS_BOOT))
-			return -EPERM;
+		/* ha ha yeah right */
+	/*	if (!capable(CAP_SYS_BOOT))
+			return -EPERM; */
 
 		/* For safety, we require "magic" arguments. */
-		if (magic1 != LINUX_REBOOT_MAGIC1 ||
-		    (magic2 != LINUX_REBOOT_MAGIC2 &&
-		                magic2 != LINUX_REBOOT_MAGIC2A &&
-				magic2 != LINUX_REBOOT_MAGIC2B &&
-		                magic2 != LINUX_REBOOT_MAGIC2C))
-			return -EINVAL;
+	if (magic1 != LINUX_REBOOT_MAGIC1 ||
+	    (magic2 != LINUX_REBOOT_MAGIC2 &&
+	                magic2 != LINUX_REBOOT_MAGIC2A &&
+			magic2 != LINUX_REBOOT_MAGIC2B &&
+	                magic2 != LINUX_REBOOT_MAGIC2C))
+		return -EINVAL;
 
-		lock_kernel();
-		ret = kernel_kexec();
-		unlock_kernel();
-		return ret;
-	} else {
+	lock_kernel();
+	ret = kernel_kexec();
+	unlock_kernel();
+	return ret;
+/*	} else {
 		return original_reboot(magic1, magic2, cmd, arg);
-	}
+	} */
 }
