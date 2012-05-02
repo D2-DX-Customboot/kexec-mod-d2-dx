@@ -72,10 +72,10 @@ void sysdev_shutdown(void)
 			pr_debug(" %s\n", kobject_name(&sysdev->kobj));
 
 			/* Call auxillary drivers first */
-			list_for_each_entry(drv, &cls->drivers, entry) {
+		/*	list_for_each_entry(drv, &cls->drivers, entry) {
 				if (drv->shutdown)
 					drv->shutdown(sysdev);
-			}
+			} */
 
 			/* Now call the generic one */
 			if (cls->shutdown)
