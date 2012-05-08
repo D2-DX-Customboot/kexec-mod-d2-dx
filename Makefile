@@ -6,8 +6,8 @@
 # EXTRA_CFLAGS += -D__PLAT_FREESCALE_IMX31__
 
 EXTRA_CFLAGS += -DCONFIG_KEXEC -D__PLAT_TI_OMAP3430__ -Wall -march=armv7-a -mtune=cortex-a8 -mfpu=neon -fno-pic --sysroot=$NDK
-CPPFLAGS=-I/opt/android-ndk/toolchains/arm-linux-androideabi-4.4.3/platforms/android-8/arch-arm/
-LDFLAGS=-static --sysroot=/opt/android-ndk/toolchains/arm-linux-androideabi-4.4.3/platforms/android-8/arch-arm/
+CPPFLAGS=-I/home/bikedude880/android-ndk-r8/toolchains/arm-linux-androideabi-4.4.3/platforms/android-9/arch-arm/
+LDFLAGS=-static --sysroot=/home/bikedude880/android-ndk-r8/toolchains/arm-linux-androideabi-4.4.3/platforms/android-9/arch-arm/
 
 obj-m += kexec_load.o
 kexec_load-objs := kexec.o machine_kexec.o mmu.o sys.o core.o relocate_kernel.o init-mm.o \
