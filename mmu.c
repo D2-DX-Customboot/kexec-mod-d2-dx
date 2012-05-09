@@ -14,7 +14,6 @@
 #include <linux/bootmem.h>
 #include <linux/mman.h>
 #include <linux/nodemask.h>
-#include <linux/ioport.h>
 
 #include <asm/cputype.h>
 #include <asm/mach-types.h>
@@ -22,7 +21,7 @@
 #include <asm/setup.h>
 #include <asm/sizes.h>
 #include <asm/tlb.h>
-#include <asm/pgtable.h>
+#include <asm/highmem.h>
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>

@@ -42,7 +42,7 @@
 MODULE_LICENSE("GPL");
 
 /* Syscall table */
-void **sys_call_table;
+static void **sys_call_table;
 
 /* original and new reboot syscall */
 asmlinkage long (*original_reboot)(int magic1, int magic2, unsigned int cmd, void __user *arg);
@@ -52,7 +52,7 @@ extern asmlinkage long reboot(int magic1, int magic2, unsigned int cmd, void __u
 note_buf_t *crash_notes;
 
 /* vmcoreinfo stuff */
-unsigned char vmcoreinfo_data[VMCOREINFO_BYTES];
+static unsigned char vmcoreinfo_data[VMCOREINFO_BYTES];
 u32 vmcoreinfo_note[VMCOREINFO_NOTE_SIZE/4];
 size_t vmcoreinfo_size;
 size_t vmcoreinfo_max_size = sizeof(vmcoreinfo_data);
@@ -1020,6 +1020,8 @@ out:
 	mutex_unlock(&kexec_mutex);
 	kimage_free(image);
 
+	printk("kexec_load(%lx) = %d\n", entry, result);
+
 	return result;
 }
 
@@ -1132,7 +1134,7 @@ void crash_save_cpu(struct pt_regs *regs, int cpu)
 		return;
 	memset(&prstatus, 0, sizeof(prstatus));
 	prstatus.pr_pid = current->pid;
-	elf_core_copy_regs(&prstatus.pr_reg, regs);
+	elf_core_copy_kernel_regs(&prstatus.pr_reg, regs);
 	buf = append_elf_note(buf, KEXEC_CORE_NOTE_NAME, NT_PRSTATUS,
 		      	      &prstatus, sizeof(prstatus));
 	final_note(buf);
@@ -1216,7 +1218,7 @@ static int __init parse_crashkernel_mem(char 			*cmdline,
 	} while (*cur++ == ',');
 
 	if (*crash_size > 0) {
-		while (*cur != ' ' && *cur != '@')
+		while (*cur && *cur != ' ' && *cur != '@')
 			cur++;
 		if (*cur == '@') {
 			cur++;
@@ -1433,31 +1435,28 @@ int kernel_kexec(void)
 	return error;
 }
 
-unsigned long **find_sys_call_table(void)  {
-    unsigned long **sctable;
-     unsigned long ptr;
-     extern int loops_per_jiffy;
-      sctable = NULL;
-     for (ptr = (unsigned long)&unlock_kernel; ptr < (unsigned long)&loops_per_jiffy; ptr += sizeof(void *))    {
-         unsigned long *p;
-         p = (unsigned long *)ptr;
-         if (p[__NR_close] == (unsigned long) sys_close)       {
-             sctable = (unsigned long **)p;
-             return &sctable[0];
-         }
-     }
-    return NULL;
-}
+void get_sys_call_table(){
+	void *swi_addr=(long *)0xffff0008;
+	unsigned long offset=0;
+	unsigned long *vector_swi_addr=0;
 
+	offset=((*(long *)swi_addr)&0xfff)+8;
+	vector_swi_addr=*(unsigned long *)(swi_addr+offset);
+
+	while(vector_swi_addr++){
+		if(((*(unsigned long *)vector_swi_addr)&0xfffff000)==0xe28f8000){
+			offset=((*(unsigned long *)vector_swi_addr)&0xfff)+8;
+			sys_call_table=(void *)vector_swi_addr+offset;
+			break;
+		}
+	}
+	return;
+}
 static int __init kexec_module_init(void)
 {
-//	sys_call_table=(void **)find_sys_call_table();
-//	if(sys_call_table==NULL) {
-//		printk(KERN_ERR "Cannot find the system call address\n"); 
-//		return -1;  // do not load
-//	}
+	get_sys_call_table();
 
-	sys_call_table=(void **)0xc003d004;
+//	sys_call_table=(void **)0xc00360c4;
 
 	/* Set kexec_load() syscall. */
 	sys_call_table[__NR_kexec_load]=kexec_load;
