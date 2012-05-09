@@ -41,6 +41,9 @@
 
 MODULE_LICENSE("GPL");
 
+#define KERNEL_ATTR_RO(_name) \
+static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+
 /* Syscall table */
 static void **sys_call_table;
 
@@ -1435,6 +1438,45 @@ int kernel_kexec(void)
 	return error;
 }
 
+/* Sysfs entries */
+static ssize_t kexec_loaded_show(struct kobject *kobj,
+				 struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", !!kexec_image);
+}
+KERNEL_ATTR_RO(kexec_loaded);
+
+static ssize_t kexec_crash_loaded_show(struct kobject *kobj,
+				       struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", !!kexec_crash_image);
+}
+KERNEL_ATTR_RO(kexec_crash_loaded);
+
+static ssize_t vmcoreinfo_show(struct kobject *kobj,
+			       struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%lx %x\n",
+		       paddr_vmcoreinfo_note(),
+		       (unsigned int)vmcoreinfo_max_size);
+}
+KERNEL_ATTR_RO(vmcoreinfo);
+
+static struct attribute *attrs[] = {
+	&kexec_loaded_attr.attr,
+	&kexec_crash_loaded_attr.attr,
+	&vmcoreinfo_attr.attr,
+	NULL,	/* need to NULL terminate the list of attributes */
+};
+
+static struct attribute_group attr_group = {
+	.attrs = attrs,
+};
+
+static struct kobject *example_kobj;
+
+/******/
+
 void get_sys_call_table(){
 	void *swi_addr=(long *)0xffff0008;
 	unsigned long offset=0;
@@ -1452,8 +1494,11 @@ void get_sys_call_table(){
 	}
 	return;
 }
+
 static int __init kexec_module_init(void)
 {
+	int retval;
+
 	get_sys_call_table();
 
 //	sys_call_table=(void **)0xc00360c4;
@@ -1473,6 +1518,10 @@ static int __init kexec_module_init(void)
 		" states failed\n");
 		return -ENOMEM;
 	}
+
+	retval = sysfs_create_group(kernel_kobj, &attr_group);
+	if (retval)
+		kobject_put(kernel_kobj);
 
 	/* crash_vmcoreinfo_init */
 	VMCOREINFO_OSRELEASE(init_uts_ns.name.release);
