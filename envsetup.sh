@@ -7,7 +7,7 @@ export NDK=/opt/android-ndk/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linu
 export PATH=$NDK:$PATH
 
 # The COMPILED kernel source location
-export KERNDIR=/media/disk/android/kernel/omap3
+export KERNDIR=/media/disk/android/kernel/gb
 
 # Basic stuff
 export CC=arm-linux-androideabi-
